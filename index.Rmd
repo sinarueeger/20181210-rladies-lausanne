@@ -1,0 +1,281 @@
+---
+title: "Brief introduction to Drake"
+subtitle: "Download example scripts here: [http://bit.ly/2O15oom](https://github.com/sinarueeger/workflow-example/)"
+author: "Sina Rüeger"
+date: "2018-12-10"#" (updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    css: ["default-fonts", "default", "my-theme.css"]
+    lib_dir: libs
+    nature:
+      beforeInit: "https://platform.twitter.com/widgets.js"
+      highlightStyle: github
+      highlightLines: true
+      titleSlideClass: [top, right]
+      
+---
+
+<!-- 
+<!-- From here: https://slides.yihui.name/xaringan/ -->
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library <- function(...) suppressPackageStartupMessages(base::library(...))
+knitr::opts_chunk$set(
+  tidy = TRUE
+)
+```
+
+---
+layout: true
+
+
+---
+class: left, middle
+exclude: true
+
+# About me
+
+- Background in Data Analysis & Engineering
+
+- What I do: Postdoc @ EPFL `r icon::ii_arrow_right_a()` Analysis of genetic data in infectious diseases at the [Fellay Lab](https://fellay-lab.epfl.ch/).
+
+- What I did in the past: research assistant in data science, as a biostatistician and as a PhD student in statistical genetics. 
+
+
+---
+class: left, middle
+
+
+<img border="0" alt="" src="img/dailyworkflow/dailyworkflow.001.png" width="800">
+
+.small[Adapted from Figure in [R4DS book](http://r4ds.had.co.nz/explore-intro.html)]
+
+---
+class: left, middle
+
+
+<img border="0" alt="" src="img/dailyworkflow/dailyworkflow.002.png" width="800">
+
+.small[Adapted from Figure in [R4DS book](http://r4ds.had.co.nz/explore-intro.html)]
+
+
+
+
+---
+class: left, top
+
+# The challenges
+
+## Reproducibility
+
+- Making it easy for others to **rerun** and to **understand** the project.
+
+--
+
+## Optimising computation
+
+- Caching
+- Keeping computation at minimum
+
+---
+class: left, middle
+exclude: true
+
+
+## Side effects
+
+- Having an **overview of the analysis and its iteration steps** → cleaning, modelling, visualisation, reports.
+- Having **different places** for computation (PC, Server1, Server2).
+- Using similar code in many different R scripts → **redundant** code 
+
+
+
+
+
+
+---
+class: left, middle
+
+# Drake
+
+*drake = Data Frames in R for Make*
+
+<a href="http://r-pkgs.had.co.nz/package.html">
+<img border="0" alt="" src="https://camo.githubusercontent.com/e3979ad2dd7fd9095c710f21df5d40460f61b5d1/68747470733a2f2f726f70656e7363692e6769746875622e696f2f6472616b652f696d616765732f696e666f677261706869632e737667" width="500">
+</a>
+
+- [rOpenSci R-package](https://github.com/ropensci/drake) created by [Will Landau](https://github.com/wlandau), with contributions from many others.
+
+
+- "general-purpose workflow manager for data-driven tasks"
+
+
+---
+class: left, middle
+
+## Benefits
+
+- **Clear instructions** → one file contains the **recipe** of the analysis.
+
+- **Modular code** → using **functions** instead of free floating code.
+
+- **Minimising** redundant computation → **caching** results.
+
+
+
+---
+class: left, top
+
+# Syntax
+
+## 1. Create a file `make.R`
+
+```
+create_plot <- function(data) {
+  ggplot(data, aes(x = Petal.Width, fill = Species)) +
+    geom_histogram()
+}
+
+plan <- drake_plan(
+  raw_data = readxl::read_excel(file_in("raw_data.xlsx")),
+  data = raw_data %>%
+    mutate(Species = forcats::fct_inorder(Species)) %>%
+    select(-X__1),
+  hist = create_plot(data),
+  fit = lm(Sepal.Width ~ Petal.Width + Species, data),
+  report = rmarkdown::render(
+    knitr_in("report.Rmd"),
+    output_file = file_out("report.html"),
+    quiet = TRUE
+  )
+)
+
+```
+
+
+---
+class: left, top
+
+# Syntax
+
+## 2. make()
+
+```
+make(plan)
+```
+
+## 3. Access generated objects
+
+- `readd(data)` display target.
+- `loadd(data)` load target into R session.
+
+---
+class: left, top
+
+# Syntax
+
+## 4. Other functions
+
+- [`drake_tip()`](https://ropensci.github.io/drake/reference/drake_tip.html)
+
+- See complete list of functions [here](https://ropensci.github.io/drake/reference/index.html).
+
+- To get familiar with drake, run `drake::drake_example("main")`
+
+
+
+---
+class: left, top
+
+# Tidytuesday without drake
+
+### Link to example
+
+[https://github.com/sinarueeger/workflow-example/tree/master/tidytuesday-no-drake](https://github.com/sinarueeger/workflow-example/tree/master/tidytuesday-no-drake)
+
+<!--- <img border="0" alt="" src="img/wildwest.png" width="500">------>
+
+### Folder structure
+
+```
+tidytuesday-no-drake/
+├── code
+│   ├── analysis.R
+│   └── functions.R
+├── data
+│   ├── sdfsdf
+├── report
+│   └── report.Rmd
+└── tidytuesday-no-drake.Rproj
+```
+
+---
+class: left, top
+
+## Tidytuesday with drake
+
+### Link to example
+
+[https://github.com/sinarueeger/workflow-example/tree/master/tidytuesday-with-drake](https://github.com/sinarueeger/workflow-example/tree/master/tidytuesday-with-drake)
+
+### Folder structure
+
+```
+tidytuesday-with-drake/
+├── src
+│   └── functions.R
+├── data
+│   ├── sdfsdf
+├── report
+│   └── report.Rmd
+├── make.R
+└── tidytuesday-with-drake.Rproj
+```
+
+
+
+---
+class: left, middle
+
+## Downsides
+
+- Tricky in collaborations
+
+- What if you have lots of folders, instead of a *flat* folder structure?
+
+- `.drake/`
+
+---
+class: left, top
+
+## Resources
+
+- [Github Repo](https://github.com/ropensci/drake)
+
+- [Best practices](https://ropensci.github.io/drake/articles/best-practices.html) for drake projects.
+
+- How drake compares to [similar work](https://github.com/ropensci/drake#similar-work).
+
+- Lots of [tutorials](https://github.com/ropensci/drake#tutorials) and [examples](https://github.com/ropensci/drake#examples).
+
+- Check-out [this tutorial](https://github.com/krlmlr/drake-sib-zurich) by [Kirill Müller](https://twitter.com/krlmlr).
+
+- [Cheatsheet](https://github.com/krlmlr/drake-sib-zurich/blob/master/cheat-sheet.pdf).
+
+
+
+---
+class: inverse, center, middle
+
+.big[<font face="Yanone Kaffeesatz"> Thank you! </font>] <!------`r icon::fa_smile()` ---------->
+
+.left[
+Slides: [https://sinarueeger.github.io/20181210-rladies-lausanne/#1](https://sinarueeger.github.io/20181210-rladies-lausanne/#1)
+
+Material: [https://github.com/sinarueeger/20181210-rladies-lausanne/](https://github.com/sinarueeger/20181210-rladies-lausanne/)
+
+Examples: [https://github.com/sinarueeger/workflow-example](https://github.com/sinarueeger/workflow-example/)
+
+`r icon::fa_twitter(colour = "white")`: [@sinarueeger](https://twitter.com/sinarueeger)
+]
