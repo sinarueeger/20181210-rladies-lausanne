@@ -1,6 +1,6 @@
 ---
-title: "Brief introduction to Drake"
-subtitle: "Download example scripts here: [http://bit.ly/2O15oom](https://github.com/sinarueeger/workflow-example/)"
+title: "Introduction to Drake"
+subtitle: "Download example scripts here: [http://bit.ly/2O15oom](https://github.com/sinarueeger/workflow-example/) (tidytuesday-*)"
 author: "Sina Rüeger"
 date: "2018-12-10"#" (updated: `r Sys.Date()`)"
 output:
@@ -75,23 +75,22 @@ class: left, top
 
 ## Optimising computation
 
-- Caching
-- Keeping computation at minimum
+- Keeping **computation at minimum**.
+
+
 
 ---
-class: left, middle
-exclude: true
+class: left, top
 
+# Solutions
 
-## Side effects
+- GNU Make (cumbersome, each target is a file)
 
-- Having an **overview of the analysis and its iteration steps** → cleaning, modelling, visualisation, reports.
-- Having **different places** for computation (PC, Server1, Server2).
-- Using similar code in many different R scripts → **redundant** code 
+- R-package ProjectTemplate (useful for organisation)
 
+- Knitr/RMarkdown (does not scale)
 
-
-
+- Drake ...
 
 
 ---
@@ -129,7 +128,7 @@ class: left, top
 
 # Syntax
 
-## 1. Create a file `make.R`
+## 1. Create a file make.R
 
 ```
 create_plot <- function(data) {
@@ -167,8 +166,8 @@ make(plan)
 
 ## 3. Access generated objects
 
-- `readd(data)` display target.
-- `loadd(data)` load target into R session.
+- `readd(fit)` to display target.
+- `loadd(fit)` to load target into R session.
 
 ---
 class: left, top
@@ -183,6 +182,7 @@ class: left, top
 
 - To get familiar with drake, run `drake::drake_example("main")`
 
+- Checkout [cheatsheet](https://github.com/krlmlr/drake-sib-zurich/blob/master/cheat-sheet.pdf).
 
 
 ---
@@ -200,20 +200,20 @@ class: left, top
 
 ```
 tidytuesday-no-drake/
-├── code
-│   ├── analysis.R
-│   └── functions.R
-├── data
-│   ├── sdfsdf
 ├── report
 │   └── report.Rmd
+├── src
+│   ├── analysis.R
+│   └── setup.R
+├── README.md
+├── runall.sh
 └── tidytuesday-no-drake.Rproj
 ```
 
 ---
 class: left, top
 
-## Tidytuesday with drake
+# Tidytuesday with drake
 
 ### Link to example
 
@@ -224,12 +224,11 @@ class: left, top
 ```
 tidytuesday-with-drake/
 ├── src
-│   └── functions.R
-├── data
-│   ├── sdfsdf
-├── report
-│   └── report.Rmd
+│   ├── functions.R
+│   └── setup.R
 ├── make.R
+├── README.md
+├── report.Rmd
 └── tidytuesday-with-drake.Rproj
 ```
 
@@ -238,31 +237,32 @@ tidytuesday-with-drake/
 ---
 class: left, middle
 
+## Additional features
+
+### Use high-performance computing with drake: 
+
+- `make(plan, jobs = 4)`
+- or the `future` package
+
+---
+class: left, middle
+
 ## Downsides
 
 - Tricky in collaborations
 
-- What if you have lots of folders, instead of a *flat* folder structure?
-
-- `.drake/`
+- What if you have a complex folder structure?
 
 ---
-class: left, top
+class: left, middle
 
-## Resources
+## More drake resources
 
 - [Github Repo](https://github.com/ropensci/drake)
 
-- [Best practices](https://ropensci.github.io/drake/articles/best-practices.html) for drake projects.
-
-- How drake compares to [similar work](https://github.com/ropensci/drake#similar-work).
-
 - Lots of [tutorials](https://github.com/ropensci/drake#tutorials) and [examples](https://github.com/ropensci/drake#examples).
 
-- Check-out [this tutorial](https://github.com/krlmlr/drake-sib-zurich) by [Kirill Müller](https://twitter.com/krlmlr).
-
-- [Cheatsheet](https://github.com/krlmlr/drake-sib-zurich/blob/master/cheat-sheet.pdf).
-
+- [Best practices](https://ropensci.github.io/drake/articles/best-practices.html) for drake projects.
 
 
 ---
@@ -275,7 +275,9 @@ Slides: [https://sinarueeger.github.io/20181210-rladies-lausanne/#1](https://sin
 
 Material: [https://github.com/sinarueeger/20181210-rladies-lausanne/](https://github.com/sinarueeger/20181210-rladies-lausanne/)
 
-Examples: [https://github.com/sinarueeger/workflow-example](https://github.com/sinarueeger/workflow-example/)
+Example without drake: https://github.com/sinarueeger/workflow-example/tree/master/tidytuesday-no-drake
+
+Example with drake: https://github.com/sinarueeger/workflow-example/tree/master/tidytuesday-with-drake
 
 `r icon::fa_twitter(colour = "white")`: [@sinarueeger](https://twitter.com/sinarueeger)
 ]
