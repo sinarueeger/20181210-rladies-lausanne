@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Introduction to Drake</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Sina Rüeger" />
+    <meta name="date" content="2018-12-10" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/ionicons/css/ionicons.min.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/fontawesome-all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="my-theme.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: top, right, title-slide
+
+# Introduction to Drake
+## Download example scripts here: <a href="https://github.com/sinarueeger/workflow-example/">http://bit.ly/2O15oom</a> (tidytuesday-*)
+### Sina Rüeger
+### 2018-12-10
+
+---
+
+
+&lt;!-- 
+&lt;!-- From here: https://slides.yihui.name/xaringan/ --&gt;
+
+
+
+---
+layout: true
+
+
+---
+class: left, middle
+exclude: true
+
+# About me
+
+- Background in Data Analysis &amp; Engineering
+
+- What I do: Postdoc @ EPFL <i class="ion  ion-arrow-right-a "></i> Analysis of genetic data in infectious diseases at the [Fellay Lab](https://fellay-lab.epfl.ch/).
+
+- What I did in the past: research assistant in data science, as a biostatistician and as a PhD student in statistical genetics. 
+
+
+---
+class: left, middle
+
+
+&lt;img border="0" alt="" src="img/dailyworkflow/dailyworkflow.001.png" width="800"&gt;
+
+.small[Adapted from Figure in [R4DS book](http://r4ds.had.co.nz/explore-intro.html)]
+
+---
+class: left, middle
+
+
+&lt;img border="0" alt="" src="img/dailyworkflow/dailyworkflow.002.png" width="800"&gt;
+
+.small[Adapted from Figure in [R4DS book](http://r4ds.had.co.nz/explore-intro.html)]
+
+
+
+
+---
+class: left, top
+
+# The challenges
+
+## Reproducibility
+
+- Making it easy for others to **rerun** and to **understand** the project.
+
+--
+
+## Optimising computation
+
+- Keeping **computation at minimum**.
+
+
+
+---
+class: left, top
+
+# Solutions
+
+- GNU Make (cumbersome, each target is a file)
+
+- R-package ProjectTemplate (useful for organisation)
+
+- Knitr/RMarkdown (does not scale)
+
+- Drake ...
+
+
+---
+class: left, middle
+
+# Drake
+
+*drake = Data Frames in R for Make*
+
+&lt;a href="http://r-pkgs.had.co.nz/package.html"&gt;
+&lt;img border="0" alt="" src="https://camo.githubusercontent.com/e3979ad2dd7fd9095c710f21df5d40460f61b5d1/68747470733a2f2f726f70656e7363692e6769746875622e696f2f6472616b652f696d616765732f696e666f677261706869632e737667" width="500"&gt;
+&lt;/a&gt;
+
+- [rOpenSci R-package](https://github.com/ropensci/drake) created by [Will Landau](https://github.com/wlandau), with contributions from many others.
+
+
+- "general-purpose workflow manager for data-driven tasks"
+
+
+---
+class: left, middle
+
+## Benefits
+
+- **Clear instructions** → one file contains the **recipe** of the analysis.
+
+- **Modular code** → using **functions** instead of free floating code.
+
+- **Minimising** redundant computation → **caching** results.
+
+
+
+---
+class: left, top
+
+# Syntax
+
+## 1. Create a file make.R
+
+```
+create_plot &lt;- function(data) {
+  ggplot(data, aes(x = Petal.Width, fill = Species)) +
+    geom_histogram()
+}
+
+plan &lt;- drake_plan(
+  raw_data = readxl::read_excel(file_in("raw_data.xlsx")),
+  data = raw_data %&gt;%
+    mutate(Species = forcats::fct_inorder(Species)) %&gt;%
+    select(-X__1),
+  hist = create_plot(data),
+  fit = lm(Sepal.Width ~ Petal.Width + Species, data),
+  report = rmarkdown::render(
+    knitr_in("report.Rmd"),
+    output_file = file_out("report.html"),
+    quiet = TRUE
+  )
+)
+
+```
+
+
+---
+class: left, top
+
+# Syntax
+
+## 2. make()
+
+```
+make(plan)
+```
+
+## 3. Access generated objects
+
+- `readd(fit)` to display target.
+- `loadd(fit)` to load target into R session.
+
+---
+class: left, top
+
+# Syntax
+
+## 4. Other functions
+
+- [`drake_tip()`](https://ropensci.github.io/drake/reference/drake_tip.html)
+
+- See complete list of functions [here](https://ropensci.github.io/drake/reference/index.html).
+
+- To get familiar with drake, run `drake::drake_example("main")`
+
+- Checkout [cheatsheet](https://github.com/krlmlr/drake-sib-zurich/blob/master/cheat-sheet.pdf).
+
+
+---
+class: left, top
+
+# Tidytuesday without drake
+
+### Link to example
+
+[https://github.com/sinarueeger/workflow-example/tree/master/tidytuesday-no-drake](https://github.com/sinarueeger/workflow-example/tree/master/tidytuesday-no-drake)
+
+&lt;!--- &lt;img border="0" alt="" src="img/wildwest.png" width="500"&gt;------&gt;
+
+### Folder structure
+
+```
+tidytuesday-no-drake/
+├── report
+│   └── report.Rmd
+├── src
+│   ├── analysis.R
+│   └── setup.R
+├── README.md
+├── runall.sh
+└── tidytuesday-no-drake.Rproj
+```
+
+---
+class: left, top
+
+# Tidytuesday with drake
+
+### Link to example
+
+[https://github.com/sinarueeger/workflow-example/tree/master/tidytuesday-with-drake](https://github.com/sinarueeger/workflow-example/tree/master/tidytuesday-with-drake)
+
+### Folder structure
+
+```
+tidytuesday-with-drake/
+├── src
+│   ├── functions.R
+│   └── setup.R
+├── make.R
+├── README.md
+├── report.Rmd
+└── tidytuesday-with-drake.Rproj
+```
+
+
+
+---
+class: left, middle
+
+## Additional features
+
+### Use high-performance computing with drake: 
+
+- `make(plan, jobs = 4)`
+- or the `future` package
+
+---
+class: left, middle
+
+## Downsides
+
+- Tricky in collaborations
+
+- What if you have a complex folder structure?
+
+---
+class: left, middle
+
+## More drake resources
+
+- [Github Repo](https://github.com/ropensci/drake)
+
+- Lots of [tutorials](https://github.com/ropensci/drake#tutorials) and [examples](https://github.com/ropensci/drake#examples).
+
+- [Best practices](https://ropensci.github.io/drake/articles/best-practices.html) for drake projects.
+
+
+---
+class: inverse, center, middle
+
+.big[&lt;font face="Yanone Kaffeesatz"&gt; Thank you! &lt;/font&gt;] &lt;!------<i class="fas  fa-smile "></i> ----------&gt;
+
+.left[
+Slides: [https://sinarueeger.github.io/20181210-rladies-lausanne/#1](https://sinarueeger.github.io/20181210-rladies-lausanne/#1)
+
+Material: [https://github.com/sinarueeger/20181210-rladies-lausanne/](https://github.com/sinarueeger/20181210-rladies-lausanne/)
+
+Example without drake: https://github.com/sinarueeger/workflow-example/tree/master/tidytuesday-no-drake
+
+Example with drake: https://github.com/sinarueeger/workflow-example/tree/master/tidytuesday-with-drake
+
+<i class="fab  fa-twitter " style="color:white;"></i>: [@sinarueeger](https://twitter.com/sinarueeger)
+]
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="https://platform.twitter.com/widgets.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
