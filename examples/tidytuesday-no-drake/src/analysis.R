@@ -13,6 +13,9 @@ source(here::here("src", "setup.R"))
 ##                             Data                             //
 ##////////////////////////////////////////////////////////////////
 
+## create data folder
+dir.create("data")
+
 ## download file
 download.file("https://raw.github.com/rfordatascience/tidytuesday/master/data/2018-09-11/cats_vs_dogs.csv", here::here("data", "cats_vs_dogs.csv"))
 

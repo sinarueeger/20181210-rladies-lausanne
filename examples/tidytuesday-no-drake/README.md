@@ -4,4 +4,4 @@
 
 - Article in Washington Post [*Where cats are more popular than dogs in the U.S.—and all over the world*](https://www.washingtonpost.com/news/wonk/wp/2014/07/28/where-cats-are-more-popular-than-dogs-in-the-u-s-and-all-over-the-world/?utm_term=.640945d22c7d)
 
-- To generate report, execute `./runall.sh`. 
+- To generate `report/report.html`, execute `./runall.sh`. 
