@@ -191,7 +191,7 @@ class: left, top
 
 ### Link to example
 
-[https://github.com/sinarueeger/workflow-example/tree/master/tidytuesday-no-drake](https://github.com/sinarueeger/workflow-example/tree/master/tidytuesday-no-drake)
+https://github.com/sinarueeger/20181210-rladies-lausanne/tree/master/examples/tidytuesday-no-drake
 
 <!--- <img border="0" alt="" src="img/wildwest.png" width="500">------>
 
@@ -216,7 +216,7 @@ class: left, top
 
 ### Link to example
 
-[https://github.com/sinarueeger/workflow-example/tree/master/tidytuesday-with-drake](https://github.com/sinarueeger/workflow-example/tree/master/tidytuesday-with-drake)
+https://github.com/sinarueeger/20181210-rladies-lausanne/tree/master/examples/tidytuesday-with-drake
 
 ### Folder structure
 
@@ -241,7 +241,7 @@ class: left, middle
 ### Use high-performance computing with drake: 
 
 - `make(plan, jobs = 4)`
-- or the `future` package
+- or with the `future` package
 
 ---
 class: left, middle
