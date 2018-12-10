@@ -1,6 +1,6 @@
 ---
 title: "Introduction to Drake"
-subtitle: "Download example scripts here: [http://bit.ly/2O15oom](https://github.com/sinarueeger/workflow-example/) (tidytuesday-*)"
+subtitle: "Download material here: http://bit.ly/20181210-rladies-lausanne"
 author: "Sina Rüeger"
 date: "2018-12-10"#" (updated: `r Sys.Date()`)"
 output:
@@ -180,15 +180,14 @@ class: left, top
 
 - See complete list of functions [here](https://ropensci.github.io/drake/reference/index.html).
 
-- To get familiar with drake, run `drake::drake_example("main")`
-
 - Checkout [cheatsheet](https://github.com/krlmlr/drake-sib-zurich/blob/master/cheat-sheet.pdf).
 
+- To get familiar with drake, run `drake::drake_example("main")`
 
 ---
 class: left, top
 
-# Tidytuesday without drake
+# Tidytuesday week 24 without drake
 
 ### Link to example
 
@@ -213,7 +212,7 @@ tidytuesday-no-drake/
 ---
 class: left, top
 
-# Tidytuesday with drake
+# Tidytuesday week 24 with drake
 
 ### Link to example
 
@@ -249,9 +248,9 @@ class: left, middle
 
 ## Downsides
 
-- Tricky in collaborations
+- Might be tricky in collaborations (to get everyone to use drake)
 
-- What if you have a complex folder structure?
+- What if you have a complex folder structure? (you will need to create symlinks)
 
 ---
 class: left, middle
@@ -275,9 +274,6 @@ Slides: [https://sinarueeger.github.io/20181210-rladies-lausanne/#1](https://sin
 
 Material: [https://github.com/sinarueeger/20181210-rladies-lausanne/](https://github.com/sinarueeger/20181210-rladies-lausanne/)
 
-Example without drake: https://github.com/sinarueeger/workflow-example/tree/master/tidytuesday-no-drake
-
-Example with drake: https://github.com/sinarueeger/workflow-example/tree/master/tidytuesday-with-drake
 
 `r icon::fa_twitter(colour = "white")`: [@sinarueeger](https://twitter.com/sinarueeger)
 ]
